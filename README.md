@@ -1,21 +1,35 @@
 # Kafka + AI 문서 OCR·검증·RAG
 
-## 기술 스택
-- **FE:** Next.js (React, Tailwind, shadcn/ui)
-- **API:** FastAPI (Python 3.12)
-- **Workers:** Python (OCR/검증/임베딩), aiokafka / confluent-kafka, OpenCV, spaCy/HF
-- **Streaming Bus:** Apache Kafka (+ Schema Registry)
-- **CDC:** Debezium (Kafka Connect) *or* Flink CDC Connectors
-- **Stream Processing:** Apache Flink (SQL/Table API, Upsert-Kafka, Checkpoint/RocksDB)
-- **DB(Ops):** PostgreSQL (+ Alembic/SQLModel or SQLAlchemy)
-- **Vector/Search:** pgvector *or* Weaviate/Qdrant/Elastic kNN
-- **Cache:** Redis
-- **Storage:** S3-compatible (MinIO/AWS S3)
-- **Observability:** Prometheus + Grafana, OpenTelemetry, ELK/Opensearch
-- **CI/CD & Infra:** GitHub Actions, Docker + Kubernetes 고려
-- **MLOps(자체모델):** PyTorch, Hugging Face(Transformers/PEFT/TRL), ONNX/TensorRT, MLflow(Model Registry), Weights & Biases(옵션)
+> **목표**: **문서 업로드 → OCR/검증 → 임베딩/색인 → 권한 반영 → RAG 응답**까지를 **카프카 중심 스트리밍 파이프라인**으로 일관되게 처리하면서, **운영 복잡도는 최소화**합니다.
 
-> 선택/확장: Pinecone, Azure/GCP OCR, Anthropic/OpenAI/로컬 LLM, Redpanda, BigQuery/Snowflake/Elastic Sink, Triton Inference Server
+
+## 🔁 변경 요약 (v2, 스트리밍 채택)
+
+- **Kafka/CDC/Streams 채택**: Debezium CDC + Kafka + **Kafka Streams(또는 ksqlDB)** 로 메타/권한/과금 **실시간 업서트**  
+- **Outbox 패턴 제한적 적용**: 전 도메인 일괄이 아닌 **핵심 Aggregate(문서/ACL/사용량)** 에만 Outbox(또는 CDC Unwrap) 적용  
+- **파티셔닝 가이드**: 순서 필요한 흐름은 `tenant_id:doc_id` 키, 그렇지 않은 집계는 `tenant_id` 키(확장성↑)  
+- **State Store 운영 표준화**: RocksDB + changelog 토픽, 백업/복구/모니터링 Playbook 포함  
+- **Citation Verifier**: **빠른 동기 휴리스틱 + 비동기 정밀 검증**(큐/캐시)로 p95 영향 최소화  
+- **RLS 하이브리드**: **핵심 테이블만 RLS** + 앱 레벨 `tenant_id` 스코프(성능·개발 난이도 균형)  
+- **FinOps**: 단위 경제 모델/예산 알람/쿼터·레이트리밋 포함
+
+## 기술 스택
+
+- **FE:** Next.js (React, Tailwind, shadcn/ui)
+- **API:** FastAPI (Python 3.12, SQLAlchemy/SQLModel, Alembic)
+- **Streaming Bus:** **Apache Kafka** (+ **Schema Registry**)
+- **CDC:** **Debezium** (Kafka Connect, Postgres→Kafka)
+- **Stream Processing:** **Kafka Streams** *or* **ksqlDB** (업서트/조인/집계)
+- **Workers:** Python (OCR/검증/임베딩), OpenCV, spaCy/HuggingFace
+- **DB(Ops):** PostgreSQL (RLS 하이브리드)
+- **Vector/Search:** pgvector *(시작)* → Elastic kNN *(성장 옵션)*
+- **Cache:** Redis (세션/레이트/임시 키)
+- **Storage:** S3-compatible (MinIO/AWS S3)
+- **Observability:** Prometheus + Grafana, OpenTelemetry, Sentry/Loki
+- **MLOps(선택):** PyTorch, HF(Transformers/PEFT/TRL), ONNX/TensorRT, MLflow, Triton
+
+> ⚙️ Streams 런타임은 **Kafka Streams(Java)** 를 권장(성숙/운영도구 풍부).  
+> Python 중심 팀은 **ksqlDB**를 우선 고려(운영 단순), 고급 요구에 Streams 보강.
 
 ---
 
@@ -30,6 +44,16 @@
 - **CDC 기반 실시간 동기화**로 권한/승인/상태/과금을 즉시 반영
 - **멀티테넌시/보안/감사/과금**까지 제품형 기능 내장
 - (NEW) **자체 AI 학습 모델**로 도메인 특화 정확도/비용/지연 최적화
+## 개요(플로우)
+
+1) **Upload/API/UI** → S3 저장 → `documents.uploaded`(Kafka) 발행  
+2) **OCR Worker**: `documents.uploaded` → OCR/파싱 → `documents.parsed`  
+3) **Validation Worker**: `documents.parsed` → 룰/유사도 검증 → `documents.validated` + Ops DB 반영  
+4) **Embedding Worker**: 청크/임베딩 → Vector DB 업서트 → `documents.indexed`  
+5) **Debezium CDC**: Ops DB 변경(`documents`, `acl`, `usage`, `billing` 등) → `db.*` CDC 토픽  
+6) **Streams/ksqlDB**: `db.*` + 파이프라인 이벤트 조인/정규화 → **Upsert 토픽**(`index.meta`, `billing.usage`)  
+7) **Search API**: `index.meta` 기반 권한 캐시 + 벡터 검색 → RAG 생성 + **Citation 검증**  
+8) **대시보드/웹훅**: 처리율/지연/오류/사용량/과금 실시간 반영
 
 ---
 
@@ -249,6 +273,6 @@
 
 **차별점 (2줄 요약)**
 
-**CDC( Debezium ) + Flink 업서트 파이프라인으로 **문서 상태/권한/사용량 변화를 초 단위로 인덱스·검색·과금에 즉시 반영합니다.
+**정합성 검증 내장 RAG:** 이름/날짜/번호 등 문서-메타 일치성을 룰/유사도로 검증하고, 실패 시 휴먼검수 루프로 정확도 보장.
 
-단순 RAG를 넘어 **문서-메타 정합성 검증(이름·날짜·번호 비교) + 휴먼검토 루프를 기본 제공해, 정확도·감사 가능성에서 제품급 차이를 만듭니다.**
+**카프카 중심 실시간 제품화**: CDC→Streams 업서트→권한/과금 즉시 반영으로 엔터프라이즈급 일관성과 감사 가능성 확보.
