@@ -12,7 +12,7 @@
 - **Cache:** Redis
 - **Storage:** S3-compatible (MinIO/AWS S3)
 - **Observability:** Prometheus + Grafana, OpenTelemetry, ELK/Opensearch
-- **CI/CD & Infra:** GitHub Actions, Docker, Kubernetes(Helm), Terraform
+- **CI/CD & Infra:** GitHub Actions, Docker + Kubernetes 고려
 - **MLOps(자체모델):** PyTorch, Hugging Face(Transformers/PEFT/TRL), ONNX/TensorRT, MLflow(Model Registry), Weights & Biases(옵션)
 
 > 선택/확장: Pinecone, Azure/GCP OCR, Anthropic/OpenAI/로컬 LLM, Redpanda, BigQuery/Snowflake/Elastic Sink, Triton Inference Server
@@ -123,7 +123,7 @@
 
 ---
 
-## 우리만의 **자체 AI 학습 모델** (독보적 기술 전략)
+## **자체 AI 학습 모델** 
 
 ### 1) 목표
 - **정확도 향상**: 일반 모델 대비 한글/서식/숫자 필드 인식 및 **정합성 판단** 정확도 ↑  
