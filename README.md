@@ -223,3 +223,32 @@
 ├─ scripts/                      # 부트스트랩/마이그레이션/메터링 집계
 ├─ docs/                         # 아키텍처/운영 문서, API 스펙, 보안/개인정보
 └─ .github/                      # Actions 워크플로우
+```
+---
+
+
+**환경 변수(핵심)**
+
+**공통**: NEXT_PUBLIC_API_URL, API_JWT_SECRET, S3_BUCKET_URL
+
+**Kafka**: KAFKA_BROKERS, SCHEMA_REGISTRY_URL, KAFKA_SASL_*(옵션)
+
+**DB**: DB_URL(Postgres), VECTOR_DB_URL, REDIS_URL
+
+**CDC**: DEBEZIUM_*(커넥터), 또는 FLINK_CDC_*
+
+**Flink**: FLINK_CHECKPOINT_DIR, STATE_BACKEND_PATH
+
+**AI**: OPENAI_API_KEY(또는 로컬 LLM 엔드포인트), EMBEDDING_MODEL
+
+**MLOps**: MLFLOW_TRACKING_URI, MODEL_REGISTRY_URI, TRITON_URL(또는 ONNX_RUNTIME_*)
+
+> 명령어(설치/실행/배포) 는 환경 세팅 후 이 파일에 추가합니다.
+
+---
+
+**차별점 (2줄 요약)**
+
+**CDC( Debezium ) + Flink 업서트 파이프라인으로 **문서 상태/권한/사용량 변화를 초 단위로 인덱스·검색·과금에 즉시 반영합니다.
+
+단순 RAG를 넘어 **문서-메타 정합성 검증(이름·날짜·번호 비교) + 휴먼검토 루프를 기본 제공해, 정확도·감사 가능성에서 제품급 차이를 만듭니다.**
