@@ -1,0 +1,89 @@
+name: Frontend CI                         # 워크플로 이름(액션 목록에 표시)
+
+on:                                       # 트리거 설정
+  push:                                   # 푸시 이벤트일 때
+    branches: ["**"]                      # 모든 브랜치 대상
+    paths:                                # 아래 경로 변경 시에만 실행
+      - "frontend/**"                     # 프런트 코드 변경
+      - ".github/workflows/frontend_test.yml"  # 워크플로 파일 변경
+  pull_request:                           # PR 이벤트일 때
+    branches: ["**"]                      # 모든 브랜치 대상
+    paths:
+      - "frontend/**"                     # 프런트 코드 변경
+      - ".github/workflows/frontend_test.yml"  # 워크플로 파일 변경
+
+concurrency:                              # 동일 브랜치에서 중복 실행 방지
+  group: ${{ github.workflow }}-${{ github.ref }}  # 브랜치별 동시성 그룹 키
+  cancel-in-progress: true                # 이전 실행을 취소
+
+permissions:
+  contents: read                          # 리포지토리 읽기 권한만 부여(최소 권한)
+
+jobs:                                     # 실행할 잡 목록
+  lint_type_build:                        # 잡 이름
+    runs-on: ubuntu-latest                # 우분투 러너에서 실행
+    defaults:
+      run:
+        working-directory: frontend       # 모든 run 스텝의 기본 작업 디렉터리
+    env:
+      NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL || secrets.NEXT_PUBLIC_API_URL || 'http://localhost:8000' }}
+                                          # 빌드용 API 주소(변수/시크릿 우선, 없으면 기본값)
+
+    steps:                                # 잡의 실제 단계들
+      - name: Checkout
+        uses: actions/checkout@v4         # 리포지토리 코드 체크아웃
+
+      - name: Setup Node (with pnpm cache)
+        uses: actions/setup-node@v4       # Node 설정 + 캐시
+        with:
+          node-version: 20                # Node 20 사용
+          cache: pnpm                     # pnpm 캐시 사용
+          cache-dependency-path: frontend/pnpm-lock.yaml
+                                          # lockfile 기준 캐시 키
+
+      - name: Enable Corepack (pnpm)
+        run: |                            # Corepack으로 pnpm 8 활성화
+          corepack enable
+          corepack prepare pnpm@8 --activate
+          pnpm -v
+
+      - name: Restore Next.js cache
+        uses: actions/cache@v4            # Next.js 빌드 캐시 복원
+        with:
+          path: frontend/.next/cache      # 캐시할 경로
+          key: next-cache-${{ runner.os }}-${{ hashFiles('frontend/pnpm-lock.yaml') }}-${{ hashFiles('frontend/tsconfig.json', 'frontend/next.config.*', 'frontend/tailwind.config.*') }}
+                                          # OS+의존성+설정파일 해시로 캐시 키
+          restore-keys: |
+            next-cache-${{ runner.os }}-${{ hashFiles('frontend/pnpm-lock.yaml') }}-
+                                          # 부분 일치 키로 폴백 복원
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+                                          # 의존성 설치(락파일 엄격 준수)
+
+      - name: Lint (ESLint)
+        run: pnpm run lint --if-present   # ESLint 검사(스크립트 있을 때만)
+
+      - name: Type Check (tsc --noEmit)
+        run: pnpm exec tsc -p tsconfig.json --noEmit
+                                          # 타입체크만 수행(출력물 생성 X)
+
+      - name: Prettier check
+        run: pnpm exec prettier --check . # 코드 포맷 일관성 검사
+
+      - name: Dead code check (ts-prune)
+        run: pnpm exec ts-prune           # 미사용 export 탐지
+        # 필요 시 무시하려면: || true     # (실패 무시 옵션)
+
+      - name: Build (Next.js)
+        run: pnpm run build               # Next.js 빌드 실행
+
+      - name: Upload build artifact (optional)
+        if: success()                     # 앞 단계 성공 시에만
+        uses: actions/upload-artifact@v4  # 빌드 산출물 업로드(옵션)
+        with:
+          name: next-build                # 아티팩트 이름
+          path: |                         # 업로드할 경로 목록
+            frontend/.next
+            frontend/package.json
+            frontend/next.config.* 
