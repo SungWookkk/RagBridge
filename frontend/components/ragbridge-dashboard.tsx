@@ -7,15 +7,12 @@ import {
   Search,
   Settings,
   Upload,
-  Users,
   Bell,
   Plus,
   ChevronDown,
   Menu,
   PanelLeft,
   X,
-  Cloud,
-  MessageSquare,
   Wand2,
   Eye,
   TrendingUp,
@@ -31,7 +28,6 @@ import {
   Target,
   Sparkles,
   Layers,
-  ArrowRight,
   CheckCircle,
   AlertCircle,
   Clock,
@@ -102,7 +98,7 @@ interface Document {
   size: string
   category: string
   expectedFields: string[]
-  extractedFields: Record<string, any>
+  extractedFields: Record<string, string | number | boolean>
   validationErrors: string[]
   confidenceScore: number
   processingTime: number
@@ -390,8 +386,8 @@ export function RagBridgeDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({})
   
-  // 알림 수
-  const [notifications, _setNotifications] = useState(3)
+  // 알림 수 (실제로는 API에서 가져올 데이터)
+  const [notifications] = useState(3)
   
   // 활성 탭 상태
   const [activeTab, setActiveTab] = useState("dashboard")

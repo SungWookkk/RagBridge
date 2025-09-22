@@ -4,13 +4,10 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import {
-  Search,
   Settings,
   Menu,
   PanelLeft,
-  X,
   Bell,
-  Wand2,
   Brain,
   Database,
   Zap,
@@ -19,7 +16,6 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Tooltip } from "@/components/ui/tooltip"
 import { TooltipContent } from "@/components/ui/tooltip"
 import { TooltipProvider } from "@/components/ui/tooltip"

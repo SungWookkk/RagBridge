@@ -6,8 +6,6 @@ import {
   Brain,
   Workflow,
   Activity,
-  Layers,
-  Sparkles,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"

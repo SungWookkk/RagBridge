@@ -8,6 +8,7 @@ import {
   Cpu,
   Shield,
   Settings,
+  Activity,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -26,6 +27,17 @@ import { useWorkspaces } from "@/hooks/use-workspaces"
  */
 export function ProjectManagement() {
   const { workspaces, isLoading, refetch } = useWorkspaces()
+
+  /**
+   * 워크스페이스 목록 새로고침 핸들러
+   * 
+   * @description
+   * - 사용자가 수동으로 프로젝트 목록을 새로고침할 때 사용
+   * - 실시간 업데이트가 필요한 상황에서 호출
+   */
+  const handleRefresh = () => {
+    refetch()
+  }
 
   return (
     <div className="space-y-8">
@@ -47,10 +59,20 @@ export function ProjectManagement() {
                 팀별 문서 프로젝트를 생성하고 AI 모델을 관리하세요.
               </p>
             </div>
-            <Button className="w-fit rounded-2xl bg-white text-indigo-700 hover:bg-white/90">
-              <Plus className="mr-2 h-4 w-4" />
-              새 프로젝트
-            </Button>
+            <div className="flex gap-2">
+              <Button className="w-fit rounded-2xl bg-white text-indigo-700 hover:bg-white/90">
+                <Plus className="mr-2 h-4 w-4" />
+                새 프로젝트
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-fit rounded-2xl bg-white/20 text-white border-white/30 hover:bg-white/30"
+                onClick={handleRefresh}
+              >
+                <Activity className="mr-2 h-4 w-4" />
+                새로고침
+              </Button>
+            </div>
           </div>
         </motion.div>
       </section>

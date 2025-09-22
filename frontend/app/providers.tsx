@@ -24,8 +24,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             // 10분 후 캐시에서 제거
             gcTime: 10 * 60 * 1000,
             // 네트워크 오류 시 3회 재시도
-            retry: (failureCount, error: any) => {
-              if (error?.status === 404) return false
+            retry: (failureCount, error: Error) => {
+              if ('status' in error && (error as { status: number }).status === 404) return false
               return failureCount < 3
             },
             // 백그라운드에서 자동 refetch 비활성화 (수동 제어)
@@ -35,8 +35,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
           },
           mutations: {
             // 뮤테이션 실패 시 2회 재시도
-            retry: (failureCount, error: any) => {
-              if (error?.status >= 400 && error?.status < 500) return false
+            retry: (failureCount, error: Error) => {
+              if ('status' in error) {
+                const status = (error as { status: number }).status
+                if (status >= 400 && status < 500) return false
+              }
               return failureCount < 2
             },
           },

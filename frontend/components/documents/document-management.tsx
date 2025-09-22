@@ -28,6 +28,17 @@ import { useDocuments } from "@/hooks/use-documents"
 export function DocumentManagement() {
   const { documents, isLoading, refetch } = useDocuments()
 
+  /**
+   * 문서 목록 새로고침 핸들러
+   * 
+   * @description
+   * - 사용자가 수동으로 문서 목록을 새로고침할 때 사용
+   * - 실시간 업데이트가 필요한 상황에서 호출
+   */
+  const handleRefresh = () => {
+    refetch()
+  }
+
   return (
     <div className="space-y-8">
       {/* 헤더 섹션 */}
@@ -48,10 +59,20 @@ export function DocumentManagement() {
                 업로드된 문서들의 처리 상태를 실시간으로 확인하세요.
               </p>
             </div>
-            <Button className="w-fit rounded-2xl bg-white text-emerald-700 hover:bg-white/90">
-              <Upload className="mr-2 h-4 w-4" />
-              문서 업로드
-            </Button>
+            <div className="flex gap-2">
+              <Button className="w-fit rounded-2xl bg-white text-emerald-700 hover:bg-white/90">
+                <Upload className="mr-2 h-4 w-4" />
+                문서 업로드
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-fit rounded-2xl bg-white/20 text-white border-white/30 hover:bg-white/30"
+                onClick={handleRefresh}
+              >
+                <Activity className="mr-2 h-4 w-4" />
+                새로고침
+              </Button>
+            </div>
           </div>
         </motion.div>
       </section>
