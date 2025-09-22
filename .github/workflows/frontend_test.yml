@@ -61,7 +61,7 @@ jobs:                                     # 실행할 잡 목록
                                           # 의존성 설치(락파일 엄격 준수)
 
       - name: Lint (ESLint)
-        run: pnpm run lint --if-present   # ESLint 검사(스크립트 있을 때만)
+        run: pnpm run lint                 # ESLint 검사 실행
 
       - name: Type Check (tsc --noEmit)
         run: pnpm exec tsc -p tsconfig.json --noEmit
