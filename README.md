@@ -15,7 +15,18 @@
 
 ## 기술 스택
 
-- **FE:** Next.js (React, Tailwind, shadcn/ui)
+### Frontend
+- **Next.js 15** (React 19, App Router) - 최신 버전 활용
+- **TypeScript** (strict 모드) - 타입 안전성 보장
+- **Tailwind CSS** + **shadcn/ui** - 모던 UI 컴포넌트
+- **React Query/TanStack Query** - 서버 상태 관리 및 캐싱
+- **@tanstack/react-query-devtools** - 개발 도구
+- **Zustand** - 클라이언트 상태 관리
+- **React Hook Form** - 폼 상태 관리
+- **Framer Motion** - 애니메이션
+- **Chart.js/Recharts** - 데이터 시각화
+
+### Backend
 - **API:** FastAPI (Python 3.12, SQLAlchemy/SQLModel, Alembic)
 - **Streaming Bus:** **Apache Kafka** (+ **Schema Registry**)
 - **CDC:** **Debezium** (Kafka Connect, Postgres→Kafka)
@@ -186,70 +197,129 @@
 
 ---
 
-## 폴더 구조(명확 버전)
+## 폴더 구조 (현재 구현 상태)
+
+### Frontend - Next.js App Router 기반 컴포넌트 분리 구조
+
+```bash
+frontend/
+├─ app/                          # Next.js App Router 구조
+│  ├─ layout.tsx                 # 루트 레이아웃 (React Query 설정)
+│  ├─ page.tsx                   # 메인 페이지 (대시보드로 리다이렉트)
+│  ├─ providers.tsx              # React Query 프로바이더
+│  ├─ globals.css                # 글로벌 스타일
+│  └─ dashboard/                 # 대시보드 페이지들
+│     ├─ layout.tsx              # 대시보드 공통 레이아웃
+│     ├─ page.tsx                # 대시보드 메인 (개요)
+│     ├─ documents/page.tsx      # 문서 관리 페이지
+│     ├─ search/page.tsx         # 스마트 검색 페이지
+│     ├─ projects/page.tsx       # 프로젝트 관리 페이지
+│     └─ monitoring/page.tsx     # 시스템 모니터링 페이지
+├─ components/                   # 기능별 분리된 컴포넌트
+│  ├─ layout/                    # 공통 레이아웃 컴포넌트
+│  │  ├─ dashboard-layout.tsx    # 대시보드 레이아웃 (사이드바, 헤더)
+│  │  └─ sidebar.tsx             # 네비게이션 사이드바
+│  ├─ dashboard/                 # 대시보드 관련 컴포넌트
+│  │  ├─ dashboard-overview.tsx  # 대시보드 개요
+│  │  ├─ recent-documents.tsx    # 최근 문서 현황
+│  │  └─ project-overview.tsx    # 프로젝트 개요
+│  ├─ documents/                 # 문서 관리 컴포넌트
+│  │  └─ document-management.tsx
+│  ├─ search/                    # 검색 관련 컴포넌트
+│  │  └─ smart-search.tsx
+│  ├─ projects/                  # 프로젝트 관리 컴포넌트
+│  │  └─ project-management.tsx
+│  ├─ monitoring/                # 모니터링 컴포넌트
+│  │  └─ system-monitoring.tsx
+│  └─ ui/                        # shadcn/ui 기본 컴포넌트들
+│     ├─ avatar.tsx              # 아바타 컴포넌트
+│     ├─ badge.tsx               # 배지 컴포넌트
+│     ├─ button.tsx              # 버튼 컴포넌트
+│     ├─ card.tsx                # 카드 컴포넌트
+│     ├─ input.tsx               # 입력 컴포넌트
+│     ├─ progress.tsx            # 진행률 컴포넌트
+│     ├─ scroll-area.tsx         # 스크롤 영역
+│     ├─ tabs.tsx                # 탭 컴포넌트
+│     ├─ toast.tsx               # 토스트 알림
+│     └─ tooltip.tsx             # 툴팁 컴포넌트
+├─ hooks/                        # API 연동 커스텀 훅
+│  ├─ use-documents.ts           # 문서 관련 API 훅
+│  ├─ use-workspaces.ts          # 워크스페이스 관련 API 훅
+│  ├─ use-search.ts              # 검색 기능 훅
+│  ├─ use-system-metrics.ts      # 시스템 메트릭 훅
+│  └─ use-toast.ts               # 토스트 훅
+├─ lib/                          # 유틸리티 및 API 클라이언트
+│  ├─ api.ts                     # Axios API 클라이언트 설정
+│  └─ utils.ts                   # 공통 유틸리티 함수
+├─ public/                       # 정적 파일들
+├─ components.json               # shadcn/ui 설정
+├─ eslint.config.mjs             # ESLint 설정
+├─ next.config.ts                # Next.js 설정
+├─ package.json                  # 의존성 및 스크립트
+├─ pnpm-lock.yaml                # PNPM 락 파일
+├─ postcss.config.mjs            # PostCSS 설정
+├─ tsconfig.json                 # TypeScript 설정
+└─ README.md                     # 프론트엔드 README
+```
+
+### 전체 프로젝트 구조
 
 ```bash
 .
-├─ README.md
-├─ frontend/                     # Next.js 웹앱 (대시보드, RAG 콘솔, 룰 빌더)
-│  ├─ app/                       # pages/app router
-│  ├─ components/
-│  ├─ lib/                       # API 클라이언트, auth, hooks
-│  ├─ styles/
-│  └─ tests/
-├─ api-gateway/                  # FastAPI 게이트웨이 (Auth/Upload/Search/Webhooks)
-│  ├─ app/
-│  │  ├─ api/                    # REST/GraphQL
-│  │  ├─ services/               # search, auth, billing, webhook
-│  │  ├─ models/                 # SQLModel/SQLAlchemy
-│  │  ├─ schemas/                # Pydantic
-│  │  ├─ config/
-│  │  └─ main.py
-│  └─ tests/
-├─ workers/
-│  ├─ ocr/                       # OCR/파서 컨슈머
-│  │  ├─ consumer.py
-│  │  ├─ ocr_providers/          # tesseract/paddle/textract/docai/azure
-│  │  └─ preprocessing/          # OpenCV 필터
-│  ├─ validate/                  # 정합성 검증/휴먼검토 트리거
-│  │  └─ consumer.py
-│  ├─ embed/                     # 임베딩 생성/업서트
-│  │  └─ consumer.py
-│  └─ common/                    # 공통 유틸(카프카, 스키마, 로깅)
-├─ stream/
-│  ├─ flink/                     # Flink SQL/CDC 잡
-│  │  ├─ ddl/                    # source/sink DDL
-│  │  ├─ queries/                # join/window/upsert
-│  │  └─ pipeline.md
-│  └─ ksqldb/                    # (옵션) ksql 쿼리
-├─ connect/
-│  ├─ debezium/                  # Debezium 커넥터 설정(JSON)
-│  └─ sinks/                     # BigQuery/Snowflake/Elastic 등
-├─ ml/                           # (NEW) 자체 모델 학습/서빙
-│  ├─ data/                      # 데이터 카드/스냅샷 메타(PII 제거본)
-│  ├─ training/
-│  │  ├─ embedding/              # SBERT/miniLM 파인튜닝 스크립트
-│  │  ├─ reranker/               # cross-encoder 학습
-│  │  ├─ ner/                    # 필드추출 모델
-│  │  ├─ layout/                 # layoutlm/donut (옵션)
-│  │  └─ utils/
-│  ├─ serving/
-│  │  ├─ triton/                 # 모델 리포지토리, config.pbtxt
-│  │  ├─ onnx/                   # 변환 스크립트
-│  │  └─ server/                 # gRPC/REST inference 서버
-│  ├─ registry/                  # MLflow 등록/승격 스크립트
-│  └─ evaluation/                # 벤치마크/리포트/LLM-as-a-Judge
-├─ infra/
-│  ├─ docker/                    # compose 파일들
-│  ├─ k8s/                       # Helm 차트/매니페스트
-│  ├─ terraform/                 # IaC
-│  └─ grafana/                   # 대시보드 JSON
-├─ scripts/                      # 부트스트랩/마이그레이션/메터링 집계
-├─ docs/                         # 아키텍처/운영 문서, API 스펙, 보안/개인정보
-└─ .github/                      # Actions 워크플로우
+├─ README.md                     # 프로젝트 개요 및 아키텍처 문서
+├─ docs/                         # 아키텍처/운영 문서
+│  └─ branch-strategy.md         # 브랜치 전략
+├─ frontend/                     # Next.js 웹앱 (✅ 구현 완료)
+├─ package.json                  # 루트 패키지 설정
+├─ pnpm-lock.yaml                # 루트 PNPM 락 파일
+└─ .cursor/                      # Cursor AI 설정
+    └─ rules/                    # 개발 규칙 및 가이드라인
+        ├─ airule.mdc            # 프론트엔드 개발 규칙
+        └─ project-sync.mdc      # 프로젝트 동기화 규칙
+
+# 향후 구현 예정 디렉토리들
+├─ api-gateway/                  # FastAPI 게이트웨이 (예정)
+├─ workers/                      # Kafka 컨슈머 워커들 (예정)
+├─ stream/                       # 스트림 처리 (예정)
+├─ connect/                      # Kafka Connect 설정 (예정)
+├─ ml/                           # AI 모델 학습/서빙 (예정)
+├─ infra/                        # 인프라 설정 (예정)
+├─ scripts/                      # 배포/운영 스크립트 (예정)
+└─ .github/                      # CI/CD 워크플로우 (예정)
 ```
 ---
 
+## 🚀 빠른 시작
+
+### Frontend 개발 환경 설정
+
+```bash
+# 의존성 설치
+cd frontend
+pnpm install
+
+# 개발 서버 실행
+pnpm dev
+
+# 타입 체크
+pnpm typecheck
+
+# 린트 검사
+pnpm lint
+```
+
+### 접속 정보
+- **개발 서버**: http://localhost:3000
+- **React Query DevTools**: 개발 환경에서 자동 활성화
+
+### 주요 페이지
+- `/dashboard` - 메인 대시보드 (개요)
+- `/dashboard/documents` - 문서 관리
+- `/dashboard/search` - 스마트 검색
+- `/dashboard/projects` - 프로젝트 관리
+- `/dashboard/monitoring` - 시스템 모니터링
+
+---
 
 **환경 변수(핵심)**
 
@@ -268,6 +338,23 @@
 **MLOps**: MLFLOW_TRACKING_URI, MODEL_REGISTRY_URI, TRITON_URL(또는 ONNX_RUNTIME_*)
 
 > 명령어(설치/실행/배포) 는 환경 세팅 후 이 파일에 추가합니다.
+
+---
+
+## 🚀 Frontend 아키텍처 특징
+
+### 컴포넌트 분리 및 성능 최적화
+- **Next.js App Router**: 페이지 기반 라우팅으로 자동 코드 스플리팅
+- **React Query**: 서버 상태 관리 및 캐싱 (staleTime: 5분, gcTime: 10분)
+- **컴포넌트 분리**: 1000줄 이상 거대 컴포넌트 금지, 기능별 독립적 분리
+- **타입 안전성**: TypeScript strict 모드로 컴파일 타임 에러 방지
+- **실시간 업데이트**: 5초마다 자동 데이터 새로고침
+
+### 개발 생산성 향상
+- **커스텀 훅**: API 연동 로직을 훅으로 분리하여 재사용성 극대화
+- **레이아웃 중첩**: 공통 레이아웃과 기능별 레이아웃 분리
+- **개발 도구**: React Query DevTools로 캐싱 상태 실시간 모니터링
+- **코드 리뷰**: 체크리스트 기반 품질 보장
 
 ---
 
