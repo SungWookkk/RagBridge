@@ -33,6 +33,11 @@ jobs:                                     # 실행할 잡 목록
       - name: Checkout
         uses: actions/checkout@v4         # 리포지토리 코드 체크아웃
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4        # pnpm 설치 (안정적인 방법)
+        with:
+          version: latest                 # 최신 버전 사용
+
       - name: Setup Node (with pnpm cache)
         uses: actions/setup-node@v4       # Node 설정 + 캐시
         with:
@@ -40,12 +45,6 @@ jobs:                                     # 실행할 잡 목록
           cache: pnpm                     # pnpm 캐시 사용
           cache-dependency-path: frontend/pnpm-lock.yaml
                                           # lockfile 기준 캐시 키
-
-      - name: Enable Corepack (pnpm)
-        run: |                            # Corepack으로 pnpm 8 활성화
-          corepack enable
-          corepack prepare pnpm@8 --activate
-          pnpm -v
 
       - name: Restore Next.js cache
         uses: actions/cache@v4            # Next.js 빌드 캐시 복원
