@@ -83,8 +83,10 @@ export function useSystemMetrics() {
         ],
       };
     },
-    refetchInterval: 5000, // 5초마다 자동 새로고침
-    staleTime: 3000, // 3초 후 stale 상태로 변경
+    // TODO: 실제 API 연동 시 필요에 따라 폴링 활성화
+    // refetchInterval: 15000, // 15초마다 자동 새로고침 (실제 API 연동 시)
+    refetchInterval: false, // 목 데이터 사용 중이므로 폴링 비활성화
+    staleTime: 5 * 60 * 1000, // 5분 후 stale 상태로 변경 (providers.tsx와 일치)
   });
 
   return {

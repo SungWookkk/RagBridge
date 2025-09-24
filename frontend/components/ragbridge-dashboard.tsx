@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * @deprecated 이 컴포넌트는 성능 문제로 인해 ragbridge-dashboard-refactored.tsx로 대체되었습니다.
+ * 새로운 리팩토링된 컴포넌트를 사용하세요.
+ */
+
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {

@@ -103,9 +103,9 @@ export default function HomePage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Link href="/dashboard">
+          <Link href="/auth/login">
             <Button>
-              대시보드 시작하기
+              로그인
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
@@ -158,7 +158,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
           >
-            <Link href="/dashboard">
+            <Link href="/auth/register">
               <Button size="lg" className="w-full sm:w-auto">
                 <Zap className="w-5 h-5 mr-2" />
                 무료로 시작하기
@@ -290,14 +290,14 @@ export default function HomePage() {
           <p className="text-xl mb-8 opacity-90">
             무료로 가입하고 AI 기반 문서 처리를 경험해보세요
           </p>
-          <Link href="/dashboard">
+          <Link href="/auth/register">
             <Button
               size="lg"
               variant="secondary"
               className="bg-white text-blue-600 hover:bg-gray-100"
             >
               <Users className="w-5 h-5 mr-2" />
-              대시보드로 이동
+              회원가입하기
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>

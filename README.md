@@ -358,6 +358,42 @@ pnpm lint
 
 ---
 
+
+### 환경 변수 설정
+```bash
+# .env.local
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
+```
+
+### 타입 정의 예시
+```typescript
+// types/api.types.ts
+export interface Document {
+  id: string;
+  name: string;
+  tenantId: string;
+  status: DocumentStatus;
+  fileType: string;
+  uploadedAt: string;
+  size: string;
+  category: string;
+  expectedFields: string[];
+  extractedFields: Record<string, any>;
+  validationErrors: string[];
+  confidenceScore: number;
+  processingTime: number;
+}
+
+export interface ApiResponse<T> {
+  data: T;
+  message: string;
+  status: 'success' | 'error';
+}
+```
+
+---
+
 **차별점 (2줄 요약)**
 
 **정합성 검증 내장 RAG:** 이름/날짜/번호 등 문서-메타 일치성을 룰/유사도로 검증하고, 실패 시 휴먼검수 루프로 정확도 보장.

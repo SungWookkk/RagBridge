@@ -10,6 +10,20 @@ import {
   Zap,
   TrendingUp,
 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
 import {
   Card,
@@ -22,13 +36,105 @@ import { Button } from "@/components/ui/button";
 import { useSystemMetrics } from "@/hooks/use-system-metrics";
 
 /**
+ * 하드코딩된 차트 데이터
+ *
+ * @description
+ * - 문서 처리량 추이 데이터 (시간별)
+ * - AI 모델 성능 데이터
+ * - 시스템 상태 데이터
+ */
+const chartData = [
+  {
+    time: "09:00",
+    documents: 120,
+    accuracy: 95.2,
+    processingTime: 2.3,
+    errors: 2,
+  },
+  {
+    time: "10:00",
+    documents: 180,
+    accuracy: 96.1,
+    processingTime: 2.1,
+    errors: 1,
+  },
+  {
+    time: "11:00",
+    documents: 220,
+    accuracy: 95.8,
+    processingTime: 2.4,
+    errors: 3,
+  },
+  {
+    time: "12:00",
+    documents: 195,
+    accuracy: 96.5,
+    processingTime: 2.0,
+    errors: 1,
+  },
+  {
+    time: "13:00",
+    documents: 165,
+    accuracy: 95.9,
+    processingTime: 2.2,
+    errors: 2,
+  },
+  {
+    time: "14:00",
+    documents: 240,
+    accuracy: 96.8,
+    processingTime: 1.9,
+    errors: 1,
+  },
+  {
+    time: "15:00",
+    documents: 280,
+    accuracy: 96.2,
+    processingTime: 2.1,
+    errors: 2,
+  },
+  {
+    time: "16:00",
+    documents: 320,
+    accuracy: 95.7,
+    processingTime: 2.3,
+    errors: 4,
+  },
+  {
+    time: "17:00",
+    documents: 290,
+    accuracy: 96.3,
+    processingTime: 2.0,
+    errors: 2,
+  },
+  {
+    time: "18:00",
+    documents: 180,
+    accuracy: 96.0,
+    processingTime: 2.2,
+    errors: 1,
+  },
+];
+
+/**
+ * 처리 단계별 분포 데이터
+ */
+const processingStepsData = [
+  { name: "OCR 처리", value: 25, color: "#3b82f6" },
+  { name: "필드 추출", value: 20, color: "#8b5cf6" },
+  { name: "검증", value: 15, color: "#06b6d4" },
+  { name: "임베딩", value: 20, color: "#10b981" },
+  { name: "인덱싱", value: 20, color: "#f59e0b" },
+];
+
+/**
  * 시스템 모니터링 컴포넌트
  *
  * @description
  * - 실시간 시스템 상태 및 성능 지표
  * - AI 모델 성능 모니터링
  * - 스트림 처리 상태 및 알림 관리
- * - 성능 최적화를 위한 컴포넌트 분리
+ * - Recharts를 사용한 인터랙티브 차트 구현
  */
 export function SystemMonitoring() {
   const { metrics, isLoading } = useSystemMetrics();
@@ -146,6 +252,7 @@ export function SystemMonitoring() {
 
       {/* 차트 및 상세 정보 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* 문서 처리량 추이 차트 */}
         <Card className="rounded-3xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -155,24 +262,169 @@ export function SystemMonitoring() {
             <CardDescription>시간별 문서 처리량과 성능 지표</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-64 flex items-center justify-center bg-muted/30 rounded-2xl">
-              <div className="text-center">
-                <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                <p className="text-sm text-muted-foreground">
-                  실시간 차트 영역
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Chart.js 또는 Recharts로 구현 예정
-                </p>
-              </div>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis
+                    dataKey="time"
+                    stroke="#6b7280"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#6b7280"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    }}
+                    labelStyle={{ color: "#374151", fontWeight: "600" }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="documents"
+                    stroke="#3b82f6"
+                    strokeWidth={3}
+                    dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: "#3b82f6", strokeWidth: 2 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="accuracy"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    dot={{ fill: "#10b981", strokeWidth: 2, r: 3 }}
+                    activeDot={{ r: 5, stroke: "#10b981", strokeWidth: 2 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
 
+        {/* 처리 단계별 분포 차트 */}
         <Card className="rounded-3xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
+              처리 단계별 분포
+            </CardTitle>
+            <CardDescription>
+              AI 파이프라인 단계별 처리 시간 분포
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={processingStepsData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {processingStepsData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    }}
+                    formatter={(value: number, name: string) => [
+                      `${value}%`,
+                      name,
+                    ]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            {/* 범례 */}
+            <div className="grid grid-cols-2 gap-2 mt-4">
+              {processingStepsData.map((step, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: step.color }}
+                  />
+                  <span className="text-xs text-muted-foreground">
+                    {step.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* 추가 차트 섹션 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* 처리 시간 추이 차트 */}
+        <Card className="rounded-3xl">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              처리 시간 추이
+            </CardTitle>
+            <CardDescription>시간별 평균 처리 시간과 에러율</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis
+                    dataKey="time"
+                    stroke="#6b7280"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#6b7280"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    }}
+                    labelStyle={{ color: "#374151", fontWeight: "600" }}
+                  />
+                  <Bar
+                    dataKey="processingTime"
+                    fill="#8b5cf6"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 스트림 처리 상태 */}
+        <Card className="rounded-3xl">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5" />
               스트림 처리 상태
             </CardTitle>
             <CardDescription>

@@ -92,8 +92,10 @@ export function useWorkspaces() {
         },
       ];
     },
-    refetchInterval: 10000, // 10초마다 자동 새로고침
-    staleTime: 5000, // 5초 후 stale 상태로 변경
+    // TODO: 실제 API 연동 시 필요에 따라 폴링 활성화
+    // refetchInterval: 60000, // 1분마다 자동 새로고침 (실제 API 연동 시)
+    refetchInterval: false, // 목 데이터 사용 중이므로 폴링 비활성화
+    staleTime: 5 * 60 * 1000, // 5분 후 stale 상태로 변경 (providers.tsx와 일치)
   });
 
   return {
@@ -150,13 +152,16 @@ export function useCreateWorkspace() {
       setIsCreating(false);
       return { success: true, workspaceId: "new-workspace-id" };
     } catch (error) {
-      setCreateError(
+      const errorMessage =
         error instanceof Error
           ? error.message
-          : "워크스페이스 생성 중 오류가 발생했습니다.",
-      );
+          : "워크스페이스 생성 중 오류가 발생했습니다.";
+
+      setCreateError(errorMessage);
       setIsCreating(false);
-      return { success: false, error: createError };
+
+      // Race condition 방지: 지역 변수로 에러 메시지 반환
+      return { success: false, error: errorMessage };
     }
   };
 
