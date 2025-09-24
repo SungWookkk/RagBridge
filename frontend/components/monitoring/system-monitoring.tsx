@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 import {
   Activity,
   BarChart3,
@@ -9,15 +9,21 @@ import {
   Brain,
   Zap,
   TrendingUp,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { useSystemMetrics } from "@/hooks/use-system-metrics"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useSystemMetrics } from "@/hooks/use-system-metrics";
 
 /**
  * 시스템 모니터링 컴포넌트
- * 
+ *
  * @description
  * - 실시간 시스템 상태 및 성능 지표
  * - AI 모델 성능 모니터링
@@ -25,7 +31,7 @@ import { useSystemMetrics } from "@/hooks/use-system-metrics"
  * - 성능 최적화를 위한 컴포넌트 분리
  */
 export function SystemMonitoring() {
-  const { metrics, isLoading } = useSystemMetrics()
+  const { metrics, isLoading } = useSystemMetrics();
 
   return (
     <div className="space-y-6">
@@ -73,7 +79,7 @@ export function SystemMonitoring() {
             </p>
           </CardContent>
         </Card>
-        
+
         <Card className="rounded-3xl border-l-4 border-l-blue-500">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -86,11 +92,13 @@ export function SystemMonitoring() {
               {isLoading ? "..." : `${metrics.avgProcessingTime}초`}
             </div>
             <p className="text-xs text-muted-foreground">
-              {isLoading ? "..." : `${metrics.processingTimeImprovement > 0 ? '-' : '+'}${Math.abs(metrics.processingTimeImprovement)}초 개선`}
+              {isLoading
+                ? "..."
+                : `${metrics.processingTimeImprovement > 0 ? "-" : "+"}${Math.abs(metrics.processingTimeImprovement)}초 개선`}
             </p>
           </CardContent>
         </Card>
-        
+
         <Card className="rounded-3xl border-l-4 border-l-purple-500">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -100,14 +108,18 @@ export function SystemMonitoring() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">
-              {isLoading ? "..." : `${(metrics.modelAccuracy * 100).toFixed(1)}%`}
+              {isLoading
+                ? "..."
+                : `${(metrics.modelAccuracy * 100).toFixed(1)}%`}
             </div>
             <p className="text-xs text-muted-foreground">
-              {isLoading ? "..." : `+${(metrics.accuracyImprovement * 100).toFixed(1)}% 향상`}
+              {isLoading
+                ? "..."
+                : `+${(metrics.accuracyImprovement * 100).toFixed(1)}% 향상`}
             </p>
           </CardContent>
         </Card>
-        
+
         <Card className="rounded-3xl border-l-4 border-l-orange-500">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -117,10 +129,16 @@ export function SystemMonitoring() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">
-              {isLoading ? "..." : `${metrics.activeStreams}/${metrics.totalStreams}`}
+              {isLoading
+                ? "..."
+                : `${metrics.activeStreams}/${metrics.totalStreams}`}
             </div>
             <p className="text-xs text-muted-foreground">
-              {isLoading ? "..." : metrics.activeStreams === metrics.totalStreams ? "모든 토픽 정상" : "일부 토픽 점검 필요"}
+              {isLoading
+                ? "..."
+                : metrics.activeStreams === metrics.totalStreams
+                  ? "모든 토픽 정상"
+                  : "일부 토픽 점검 필요"}
             </p>
           </CardContent>
         </Card>
@@ -134,16 +152,18 @@ export function SystemMonitoring() {
               <TrendingUp className="h-5 w-5" />
               문서 처리량 추이
             </CardTitle>
-            <CardDescription>
-              시간별 문서 처리량과 성능 지표
-            </CardDescription>
+            <CardDescription>시간별 문서 처리량과 성능 지표</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-64 flex items-center justify-center bg-muted/30 rounded-2xl">
               <div className="text-center">
                 <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                <p className="text-sm text-muted-foreground">실시간 차트 영역</p>
-                <p className="text-xs text-muted-foreground">Chart.js 또는 Recharts로 구현 예정</p>
+                <p className="text-sm text-muted-foreground">
+                  실시간 차트 영역
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Chart.js 또는 Recharts로 구현 예정
+                </p>
               </div>
             </div>
           </CardContent>
@@ -161,45 +181,57 @@ export function SystemMonitoring() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {isLoading ? (
-                Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-2xl bg-muted/30">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-muted rounded-full animate-pulse" />
-                      <div className="space-y-1">
-                        <div className="h-3 bg-muted rounded animate-pulse w-32" />
-                        <div className="h-2 bg-muted rounded animate-pulse w-24" />
+              {isLoading
+                ? Array.from({ length: 4 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 rounded-2xl bg-muted/30"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-3 h-3 bg-muted rounded-full animate-pulse" />
+                        <div className="space-y-1">
+                          <div className="h-3 bg-muted rounded animate-pulse w-32" />
+                          <div className="h-2 bg-muted rounded animate-pulse w-24" />
+                        </div>
+                      </div>
+                      <div className="text-right space-y-1">
+                        <div className="h-3 bg-muted rounded animate-pulse w-12" />
+                        <div className="h-2 bg-muted rounded animate-pulse w-8" />
                       </div>
                     </div>
-                    <div className="text-right space-y-1">
-                      <div className="h-3 bg-muted rounded animate-pulse w-12" />
-                      <div className="h-2 bg-muted rounded animate-pulse w-8" />
-                    </div>
-                  </div>
-                ))
-              ) : (
-                metrics.streamStatus.map((stream, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-2xl bg-muted/30">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${stream.status === '정상' ? 'bg-green-500' : 'bg-red-500'}`} />
-                      <div>
-                        <p className="font-medium text-sm">{stream.topic}</p>
-                        <p className="text-xs text-muted-foreground">처리량: {stream.throughput}</p>
+                  ))
+                : metrics.streamStatus.map((stream, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 rounded-2xl bg-muted/30"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-3 h-3 rounded-full ${stream.status === "정상" ? "bg-green-500" : "bg-red-500"}`}
+                        />
+                        <div>
+                          <p className="font-medium text-sm">{stream.topic}</p>
+                          <p className="text-xs text-muted-foreground">
+                            처리량: {stream.throughput}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p
+                          className={`text-sm font-medium ${stream.status === "정상" ? "text-green-600" : "text-red-600"}`}
+                        >
+                          {stream.status}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          랙: {stream.lag}
+                        </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className={`text-sm font-medium ${stream.status === '정상' ? 'text-green-600' : 'text-red-600'}`}>
-                        {stream.status}
-                      </p>
-                      <p className="text-xs text-muted-foreground">랙: {stream.lag}</p>
-                    </div>
-                  </div>
-                ))
-              )}
+                  ))}
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { useState } from "react"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useState } from "react";
 
 /**
  * React Query 프로바이더 설정
- * 
+ *
  * @description
  * - 서버 상태 관리 및 캐싱 설정
  * - 개발 환경에서 React Query Devtools 활성화
@@ -25,8 +25,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
             gcTime: 10 * 60 * 1000,
             // 네트워크 오류 시 3회 재시도
             retry: (failureCount, error: Error) => {
-              if ('status' in error && (error as { status: number }).status === 404) return false
-              return failureCount < 3
+              if (
+                "status" in error &&
+                (error as { status: number }).status === 404
+              )
+                return false;
+              return failureCount < 3;
             },
             // 백그라운드에서 자동 refetch 비활성화 (수동 제어)
             refetchOnWindowFocus: false,
@@ -36,27 +40,27 @@ export function Providers({ children }: { children: React.ReactNode }) {
           mutations: {
             // 뮤테이션 실패 시 2회 재시도
             retry: (failureCount, error: Error) => {
-              if ('status' in error) {
-                const status = (error as { status: number }).status
-                if (status >= 400 && status < 500) return false
+              if ("status" in error) {
+                const status = (error as { status: number }).status;
+                if (status >= 400 && status < 500) return false;
               }
-              return failureCount < 2
+              return failureCount < 2;
             },
           },
         },
-      })
-  )
+      }),
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
       {children}
       {/* 개발 환경에서만 React Query Devtools 표시 */}
-      {process.env.NODE_ENV === 'development' && (
-        <ReactQueryDevtools 
+      {process.env.NODE_ENV === "development" && (
+        <ReactQueryDevtools
           initialIsOpen={false}
           buttonPosition="bottom-left"
         />
       )}
     </QueryClientProvider>
-  )
+  );
 }

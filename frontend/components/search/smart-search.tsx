@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Brain,
   Sparkles,
@@ -9,16 +9,22 @@ import {
   Settings,
   Database,
   Activity,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { useSearch } from "@/hooks/use-search"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useSearch } from "@/hooks/use-search";
 
 /**
  * 스마트 검색 컴포넌트
- * 
+ *
  * @description
  * - AI 기반 자연어 질의응답 시스템
  * - 벡터 검색 및 문서 인덱스 관리
@@ -26,20 +32,21 @@ import { useSearch } from "@/hooks/use-search"
  * - 실시간 검색 결과 표시
  */
 export function SmartSearch() {
-  const [query, setQuery] = useState("")
-  const { searchResults, isLoading, searchHistory, performSearch } = useSearch()
+  const [query, setQuery] = useState("");
+  const { searchResults, isLoading, searchHistory, performSearch } =
+    useSearch();
 
   const handleSearch = async () => {
     if (query.trim()) {
-      await performSearch(query)
+      await performSearch(query);
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch()
+    if (e.key === "Enter") {
+      handleSearch();
     }
-  }
+  };
 
   return (
     <div className="space-y-8">
@@ -85,9 +92,9 @@ export function SmartSearch() {
           <CardContent className="space-y-4">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input 
-                type="text" 
-                placeholder="예: 회사 정책에서 휴가 규정은 어떻게 되나요?" 
+              <Input
+                type="text"
+                placeholder="예: 회사 정책에서 휴가 규정은 어떻게 되나요?"
                 className="w-full rounded-2xl bg-muted pl-9 pr-4 py-3 text-base"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -95,7 +102,7 @@ export function SmartSearch() {
               />
             </div>
             <div className="flex gap-2">
-              <Button 
+              <Button
                 className="flex-1 rounded-2xl"
                 onClick={handleSearch}
                 disabled={isLoading}
@@ -117,9 +124,7 @@ export function SmartSearch() {
               <Database className="h-5 w-5" />
               검색 결과
             </CardTitle>
-            <CardDescription>
-              관련 문서와 AI 답변을 확인하세요.
-            </CardDescription>
+            <CardDescription>관련 문서와 AI 답변을 확인하세요.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -135,9 +140,13 @@ export function SmartSearch() {
                 searchResults.map((result, index) => (
                   <div key={index} className="p-4 rounded-2xl bg-muted/50">
                     <p className="font-medium mb-2">{result.title}</p>
-                    <p className="text-sm text-muted-foreground mb-2">{result.content}</p>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {result.content}
+                    </p>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>신뢰도: {(result.confidence * 100).toFixed(0)}%</span>
+                      <span>
+                        신뢰도: {(result.confidence * 100).toFixed(0)}%
+                      </span>
                       <span>•</span>
                       <span>{result.source}</span>
                     </div>
@@ -145,7 +154,9 @@ export function SmartSearch() {
                 ))
               ) : (
                 <div className="p-4 rounded-2xl bg-muted/50">
-                  <p className="text-sm text-muted-foreground">검색어를 입력하고 스마트 검색을 실행해보세요.</p>
+                  <p className="text-sm text-muted-foreground">
+                    검색어를 입력하고 스마트 검색을 실행해보세요.
+                  </p>
                 </div>
               )}
             </div>
@@ -165,19 +176,23 @@ export function SmartSearch() {
           <div className="space-y-3">
             {searchHistory.length > 0 ? (
               searchHistory.map((item, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className="flex items-center justify-between p-3 rounded-2xl bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
                   onClick={() => {
-                    setQuery(item.query)
-                    handleSearch()
+                    setQuery(item.query);
+                    handleSearch();
                   }}
                 >
                   <div className="flex-1">
                     <p className="font-medium">{item.query}</p>
-                    <p className="text-sm text-muted-foreground">{item.result}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {item.result}
+                    </p>
                   </div>
-                  <div className="text-xs text-muted-foreground">{item.time}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {item.time}
+                  </div>
                 </div>
               ))
             ) : (
@@ -189,5 +204,5 @@ export function SmartSearch() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

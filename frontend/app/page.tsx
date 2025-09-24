@@ -1,27 +1,32 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { 
-  ArrowRight, 
-  Brain, 
-  FileText, 
-  Search, 
-  Shield, 
-  Zap, 
+import { motion } from "framer-motion";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Brain,
+  FileText,
+  Search,
+  Shield,
+  Zap,
   CheckCircle,
   Sparkles,
   BarChart3,
-  Users
-} from "lucide-react"
+  Users,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 /**
  * 메인 랜딩 페이지 컴포넌트
- * 
+ *
  * @description
  * - 사용자를 환영하는 매력적인 랜딩 페이지
  * - 주요 기능 소개 및 대시보드 접근 제공
@@ -128,7 +133,10 @@ export default function HomePage() {
             transition={{ delay: 0.5 }}
           >
             문서를
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"> 스마트하게</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              {" "}
+              스마트하게
+            </span>
             <br />
             처리하세요
           </motion.h1>
@@ -139,7 +147,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
           >
-            AI 기반 OCR, 검증, RAG 기술로 문서 업로드부터 스마트 검색까지 
+            AI 기반 OCR, 검증, RAG 기술로 문서 업로드부터 스마트 검색까지
             <br />
             모든 과정을 자동화하고 최적화하세요.
           </motion.p>
@@ -157,7 +165,7 @@ export default function HomePage() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            
+
             <Button variant="outline" size="lg" className="w-full sm:w-auto">
               데모 보기
             </Button>
@@ -232,8 +240,8 @@ export default function HomePage() {
               실시간 스트리밍 처리
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              Kafka 기반 스트리밍 파이프라인으로 문서 처리를 실시간으로 모니터링하고 
-              즉시 결과를 확인할 수 있습니다.
+              Kafka 기반 스트리밍 파이프라인으로 문서 처리를 실시간으로
+              모니터링하고 즉시 결과를 확인할 수 있습니다.
             </p>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -250,7 +258,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          
+
           <Card className="p-8 bg-gradient-to-br from-blue-50 to-purple-50 border-0">
             <div className="text-center">
               <BarChart3 className="w-16 h-16 text-blue-600 mx-auto mb-4" />
@@ -261,7 +269,9 @@ export default function HomePage() {
                   <div className="text-sm text-gray-600">정확도</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-600">&lt;1초</div>
+                  <div className="text-3xl font-bold text-purple-600">
+                    &lt;1초
+                  </div>
                   <div className="text-sm text-gray-600">응답시간</div>
                 </div>
               </div>
@@ -276,14 +286,16 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0 }}
         >
-          <h2 className="text-4xl font-bold mb-4">
-            지금 바로 시작하세요
-          </h2>
+          <h2 className="text-4xl font-bold mb-4">지금 바로 시작하세요</h2>
           <p className="text-xl mb-8 opacity-90">
             무료로 가입하고 AI 기반 문서 처리를 경험해보세요
           </p>
           <Link href="/dashboard">
-            <Button size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-gray-100">
+            <Button
+              size="lg"
+              variant="secondary"
+              className="bg-white text-blue-600 hover:bg-gray-100"
+            >
               <Users className="w-5 h-5 mr-2" />
               대시보드로 이동
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -312,5 +324,5 @@ export default function HomePage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

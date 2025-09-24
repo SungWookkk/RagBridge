@@ -1,29 +1,30 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
+import { Layers, Brain, Cpu, Shield, Settings } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  Layers,
-  Brain,
-  Cpu,
-  Shield,
-  Settings,
-} from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useWorkspaces } from "@/hooks/use-workspaces"
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useWorkspaces } from "@/hooks/use-workspaces";
 
 /**
  * 프로젝트 개요 컴포넌트
- * 
+ *
  * @description
  * - 활성 프로젝트들의 요약 정보 표시
  * - AI 모델 상태 및 성능 지표
  * - 빠른 액션 버튼 제공
  */
 export function ProjectOverview() {
-  const { workspaces, isLoading } = useWorkspaces()
+  const { workspaces, isLoading } = useWorkspaces();
 
   if (isLoading) {
     return (
@@ -50,7 +51,7 @@ export function ProjectOverview() {
           ))}
         </div>
       </section>
-    )
+    );
   }
 
   return (
@@ -65,12 +66,12 @@ export function ProjectOverview() {
           모든 프로젝트
         </Button>
       </div>
-      
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {workspaces.slice(0, 3).map((workspace) => (
-          <motion.div 
-            key={workspace.id} 
-            whileHover={{ scale: 1.02, y: -5 }} 
+          <motion.div
+            key={workspace.id}
+            whileHover={{ scale: 1.02, y: -5 }}
             whileTap={{ scale: 0.98 }}
           >
             <Card className="overflow-hidden rounded-3xl border hover:border-primary/50 transition-all duration-300">
@@ -80,18 +81,26 @@ export function ProjectOverview() {
                     <Brain className="h-5 w-5 text-primary" />
                     <CardTitle className="text-lg">{workspace.name}</CardTitle>
                   </div>
-                  <Badge variant="outline" className={`rounded-xl ${
-                    workspace.status === 'active' ? 'bg-green-50 text-green-700 border-green-200' :
-                    workspace.status === 'training' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                    'bg-gray-50 text-gray-700 border-gray-200'
-                  }`}>
-                    {workspace.status === 'active' ? '활성' :
-                     workspace.status === 'training' ? '학습중' : '유지보수'}
+                  <Badge
+                    variant="outline"
+                    className={`rounded-xl ${
+                      workspace.status === "active"
+                        ? "bg-green-50 text-green-700 border-green-200"
+                        : workspace.status === "training"
+                          ? "bg-blue-50 text-blue-700 border-blue-200"
+                          : "bg-gray-50 text-gray-700 border-gray-200"
+                    }`}
+                  >
+                    {workspace.status === "active"
+                      ? "활성"
+                      : workspace.status === "training"
+                        ? "학습중"
+                        : "유지보수"}
                   </Badge>
                 </div>
                 <CardDescription>{workspace.description}</CardDescription>
               </CardHeader>
-              
+
               <CardContent className="space-y-4">
                 {/* AI 모델 정보 */}
                 <div className="flex items-center justify-between text-sm">
@@ -103,31 +112,39 @@ export function ProjectOverview() {
                     {workspace.aiModel}
                   </Badge>
                 </div>
-                
+
                 {/* 처리 통계 */}
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">문서</span>
-                      <span className="font-medium">{workspace.documents}개</span>
+                      <span className="font-medium">
+                        {workspace.documents}개
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">처리됨</span>
-                      <span className="font-medium text-green-600">{workspace.processedDocuments}개</span>
+                      <span className="font-medium text-green-600">
+                        {workspace.processedDocuments}개
+                      </span>
                     </div>
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">질의</span>
-                      <span className="font-medium">{workspace.totalQueries.toLocaleString()}회</span>
+                      <span className="font-medium">
+                        {workspace.totalQueries.toLocaleString()}회
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">응답시간</span>
-                      <span className="font-medium text-blue-600">{workspace.avgResponseTime}초</span>
+                      <span className="font-medium text-blue-600">
+                        {workspace.avgResponseTime}초
+                      </span>
                     </div>
                   </div>
                 </div>
-                
+
                 {/* 검증 룰 수 */}
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
@@ -139,7 +156,7 @@ export function ProjectOverview() {
                   </Badge>
                 </div>
               </CardContent>
-              
+
               <CardFooter className="flex gap-2">
                 <Button variant="secondary" className="flex-1 rounded-2xl">
                   <Brain className="mr-2 h-4 w-4" />
@@ -154,5 +171,5 @@ export function ProjectOverview() {
         ))}
       </div>
     </section>
-  )
+  );
 }

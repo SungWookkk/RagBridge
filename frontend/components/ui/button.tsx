@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 /**
  * Button 변형 스타일 정의
- * 
+ *
  * @description
  * - Button 컴포넌트의 다양한 시각적 변형과 크기를 정의
  * - variant: default, destructive, outline, secondary, ghost, link
@@ -41,12 +41,12 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
-)
+  },
+);
 
 /**
  * Button 컴포넌트 Props 타입
- * 
+ *
  * @description
  * - Button 컴포넌트의 props 타입 정의
  * - VariantProps를 통해 buttonVariants의 variant, size 속성 자동 추론
@@ -56,12 +56,12 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean;
 }
 
 /**
  * Button 컴포넌트
- * 
+ *
  * @description
  * - 사용자 인터랙션을 위한 버튼 컴포넌트
  * - 다양한 변형과 크기로 다양한 용도에 활용 가능
@@ -71,16 +71,16 @@ export interface ButtonProps
  */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+    const Comp = asChild ? Slot : "button";
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
       />
-    )
-  }
-)
-Button.displayName = "Button"
+    );
+  },
+);
+Button.displayName = "Button";
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };

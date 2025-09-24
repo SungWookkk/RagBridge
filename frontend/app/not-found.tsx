@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { Home, ArrowLeft, Search, FileText, AlertCircle } from "lucide-react"
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Home, ArrowLeft, Search, FileText, AlertCircle } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 /**
  * 404 Not Found 페이지 컴포넌트
- * 
+ *
  * @description
  * - Next.js App Router의 not-found.tsx 파일로 자동 처리
  * - 사용자 친화적인 404 에러 페이지 디자인
@@ -67,16 +73,16 @@ export default function NotFound() {
             className="text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-4"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ 
-              type: "spring", 
-              stiffness: 260, 
+            transition={{
+              type: "spring",
+              stiffness: 260,
               damping: 20,
-              delay: 0.5 
+              delay: 0.5,
             }}
           >
             404
           </motion.div>
-          
+
           <motion.h1
             className="text-4xl font-bold text-gray-900 mb-4"
             initial={{ opacity: 0, y: 10 }}
@@ -85,7 +91,7 @@ export default function NotFound() {
           >
             페이지를 찾을 수 없습니다
           </motion.h1>
-          
+
           <motion.p
             className="text-xl text-gray-600 mb-8"
             initial={{ opacity: 0, y: 10 }}
@@ -109,10 +115,10 @@ export default function NotFound() {
               메인 페이지로 이동
             </Button>
           </Link>
-          
-          <Button 
-            variant="outline" 
-            size="lg" 
+
+          <Button
+            variant="outline"
+            size="lg"
             className="w-full sm:w-auto"
             onClick={() => window.history.back()}
           >
@@ -205,5 +211,5 @@ export default function NotFound() {
         </motion.div>
       </motion.div>
     </div>
-  )
+  );
 }

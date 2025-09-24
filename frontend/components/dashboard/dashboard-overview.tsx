@@ -1,21 +1,16 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import {
-  Upload,
-  Brain,
-  Workflow,
-  Activity,
-} from "lucide-react"
+import { motion } from "framer-motion";
+import { Upload, Brain, Workflow, Activity } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { RecentDocuments } from "./recent-documents"
-import { ProjectOverview } from "./project-overview"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { RecentDocuments } from "./recent-documents";
+import { ProjectOverview } from "./project-overview";
 
 /**
  * 대시보드 개요 컴포넌트
- * 
+ *
  * @description
  * - 전체 문서 처리 현황 및 요약 정보 표시
  * - 실시간 처리 상태 모니터링
@@ -47,7 +42,8 @@ export function DashboardOverview() {
               </div>
               <h2 className="text-3xl font-bold">SmartDocs 문서 처리 시스템</h2>
               <p className="max-w-[600px] text-white/80">
-                AI 기반 스마트 문서 처리 플랫폼으로 문서를 쉽고 빠르게 관리하세요.
+                AI 기반 스마트 문서 처리 플랫폼으로 문서를 쉽고 빠르게
+                관리하세요.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button className="rounded-2xl bg-white text-emerald-700 hover:bg-white/90 flex items-center gap-2">
@@ -66,7 +62,11 @@ export function DashboardOverview() {
             <div className="hidden lg:block">
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                transition={{
+                  duration: 20,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }}
                 className="relative h-40 w-40"
               >
                 <div className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center">
@@ -98,5 +98,5 @@ export function DashboardOverview() {
       {/* 프로젝트 개요 */}
       <ProjectOverview />
     </div>
-  )
+  );
 }
