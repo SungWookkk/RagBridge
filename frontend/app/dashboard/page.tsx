@@ -1,13 +1,13 @@
-import { DashboardOverview } from "@/components/dashboard/dashboard-overview";
+import { RagBridgeDashboard } from "@/components/ragbridge-dashboard";
 
 /**
  * 대시보드 메인 페이지
  *
  * @description
- * - 전체 문서 처리 현황 및 요약 정보 표시
- * - 실시간 처리 상태 모니터링
- * - 빠른 액션 버튼 및 주요 지표 제공
+ * - 사용자 중심의 대시보드 인터페이스
+ * - 온보딩 체크리스트, 오늘의 작업, AI 피드백 등 제공
+ * - 기존 컴포넌트들을 조합한 Slim Wrapper 패턴
  */
 export default function DashboardPage() {
-  return <DashboardOverview />;
+  return <RagBridgeDashboard />;
 }
