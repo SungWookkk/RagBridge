@@ -12,7 +12,6 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -21,9 +20,6 @@ import { UserFocusedHero } from "./dashboard/user-focused-hero";
 import { UserTaskQueue } from "./dashboard/user-task-queue";
 import { AIFeedbackBoard } from "./dashboard/ai-feedback-board";
 import { UsageBillingSnapshot } from "./dashboard/usage-billing-snapshot";
-
-// 기존 컴포넌트들
-import { DashboardOverview } from "./dashboard/dashboard-overview";
 import { DocumentManagement } from "./documents/document-management";
 import { SmartSearch } from "./search/smart-search";
 import { ProjectManagement } from "./projects/project-management";

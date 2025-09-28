@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   CreditCard,
   TrendingUp,
@@ -171,6 +170,7 @@ export function UsageBillingSnapshot() {
                 value={calculateUsagePercentage(currentUsage.documentsProcessed, currentUsage.documentsLimit)}
                 className="h-2 mt-2"
               />
+              <div className={`h-2 rounded-full mt-1 ${getUsageBgColor(calculateUsagePercentage(currentUsage.documentsProcessed, currentUsage.documentsLimit))}`} />
             </div>
 
             {/* AI 질의 수 */}

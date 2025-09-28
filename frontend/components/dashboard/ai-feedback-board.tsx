@@ -288,7 +288,7 @@ export function AIFeedbackBoard() {
                   </div>
                   {feedback.userComment && (
                     <p className="text-sm text-muted-foreground italic">
-                      "{feedback.userComment}"
+                      &ldquo;{feedback.userComment}&rdquo;
                     </p>
                   )}
                 </div>

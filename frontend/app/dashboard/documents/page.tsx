@@ -1,13 +1,14 @@
-import { DocumentManagement } from "@/components/documents/document-management";
+import { DocumentUpload } from "@/components/documents/document-upload";
 
 /**
- * 문서 관리 페이지
+ * 문서 업로드 페이지
  *
  * @description
- * - 문서 업로드, 처리 현황, 상태 모니터링
- * - AI 처리 파이프라인 단계별 추적
- * - 문서별 상세 정보 및 액션 제공
+ * - 새 문서 업로드 및 처리 시작
+ * - 드래그 앤 드롭 파일 업로드
+ * - 멀티파일 업로드 지원
+ * - 업로드 진행률 및 상태 표시
  */
-export default function DocumentsPage() {
-  return <DocumentManagement />;
+export default function DocumentUploadPage() {
+  return <DocumentUpload />;
 }

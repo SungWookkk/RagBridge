@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  * - success, error, warning, info 네 가지 변형 제공
  * - 각 변형별로 아이콘과 색상이 다름
  */
-export type ToastVariant = "default" | "success" | "error" | "warning" | "info";
+export type ToastVariant = "default" | "success" | "error" | "warning" | "info" | "destructive";
 
 /**
  * Toast 데이터 구조 정의
@@ -74,12 +74,14 @@ const ToastContext = React.createContext<ToastContextType | undefined>(
 const variantStyles = {
   default: "border bg-background text-foreground",
   success:
-    "border-green-200 bg-green-50 text-green-900 dark:border-green-800 dark:bg-green-900/20 dark:text-green-100",
+    "border-green-200 bg-green-50 text-green-900 shadow-green-100 dark:border-green-800 dark:bg-green-900/20 dark:text-green-100",
   error:
-    "border-red-200 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-900/20 dark:text-red-100",
+    "border-red-200 bg-red-50 text-red-900 shadow-red-100 dark:border-red-800 dark:bg-red-900/20 dark:text-red-100",
   warning:
-    "border-yellow-200 bg-yellow-50 text-yellow-900 dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-100",
-  info: "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-100",
+    "border-yellow-200 bg-yellow-50 text-yellow-900 shadow-yellow-100 dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-100",
+  info: "border-blue-200 bg-blue-50 text-blue-900 shadow-blue-100 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-100",
+  destructive:
+    "border-red-200 bg-red-50 text-red-900 shadow-red-100 dark:border-red-800 dark:bg-red-900/20 dark:text-red-100",
 };
 
 const variantIcons = {
@@ -88,6 +90,7 @@ const variantIcons = {
   error: AlertCircle,
   warning: AlertTriangle,
   info: Info,
+  destructive: AlertCircle,
 };
 
 /**
@@ -105,25 +108,57 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [toasts, setToasts] = React.useState<ToastData[]>([]);
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  // 마운트 상태 확인 (Strict Mode 대응)
+  React.useEffect(() => {
+    setIsMounted(true);
+    console.log("ToastProvider 마운트됨");
+    return () => {
+      console.log("ToastProvider 언마운트됨");
+    };
+  }, []);
+
+  // 디버깅: toasts 상태 변화 확인
+  React.useEffect(() => {
+    if (isMounted) {
+      console.log("toasts 상태 변화:", toasts.length, toasts.map(t => t.title));
+    }
+  }, [toasts, isMounted]);
 
   /**
-   * 새 토스트 추가 함수
+   * 새 토스트 추가 함수 (강화된 중복 방지)
    *
    * @param toast - 추가할 토스트 데이터 (id 제외)
    * @description
    * - 고유 ID를 crypto.randomUUID()로 생성
    * - 기본 duration 5초 설정
-   * - 기존 toasts 배열에 새 토스트 추가
+   * - 동일한 title을 가진 토스트가 있으면 기존 것을 제거하고 새로 추가
+   * - 최대 1개의 토스트만 표시 (중복 완전 방지)
    */
   const toast = React.useCallback((toast: Omit<ToastData, "id">) => {
+    if (!isMounted) {
+      console.log("ToastProvider가 마운트되지 않음, Toast 호출 무시");
+      return;
+    }
+
     const id = crypto.randomUUID();
     const newToast: ToastData = {
       ...toast,
       id,
       duration: toast.duration ?? 5000,
     };
-    setToasts((prev) => [...prev, newToast]);
-  }, []);
+    
+    // 디버깅 로그 추가
+    console.log("Toast 호출:", newToast.title, newToast.description);
+    
+    setToasts((prev) => {
+      console.log("기존 Toast 개수:", prev.length);
+      
+      // 항상 하나의 Toast만 유지 (중복 완전 방지)
+      return [newToast];
+    });
+  }, [isMounted]);
 
   /**
    * 특정 토스트 제거 함수
@@ -182,7 +217,6 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <ToastContext.Provider value={contextValue}>
       {children}
-      <ToastViewport toasts={toasts} onDismiss={dismiss} />
     </ToastContext.Provider>
   );
 };
@@ -201,29 +235,6 @@ export const useToast = () => {
     throw new Error("useToast must be used within a ToastProvider");
   }
   return context;
-};
-
-/**
- * Toast Viewport 컴포넌트
- *
- * @description
- * - 토스트들이 표시될 컨테이너 영역
- * - 화면 우상단에 고정 위치
- * - 반응형 디자인으로 모바일에서는 상단, 데스크톱에서는 우하단
- * - z-index 100으로 다른 요소들 위에 표시
- * - ToastProvider 내부에서 직접 toasts 배열과 dismiss 함수를 받아서 렌더링
- */
-const ToastViewport: React.FC<{
-  toasts: ToastData[];
-  onDismiss: (id: string) => void;
-}> = ({ toasts, onDismiss }) => {
-  return (
-    <div className="fixed top-0 right-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]">
-      {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
-      ))}
-    </div>
-  );
 };
 
 /**
@@ -270,7 +281,7 @@ const ToastItem: React.FC<{
   return (
     <div
       className={cn(
-        "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all duration-300 ease-in-out",
+        "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-lg border p-4 pr-8 shadow-lg transition-all duration-300 ease-in-out",
         variantStyles[toast.variant],
         isVisible && !isLeaving
           ? "translate-x-0 opacity-100"
@@ -309,6 +320,8 @@ const ToastItem: React.FC<{
             "text-green-300 hover:text-green-50 focus:ring-green-400",
           toast.variant === "info" &&
             "text-blue-300 hover:text-blue-50 focus:ring-blue-400",
+          toast.variant === "destructive" &&
+            "text-red-300 hover:text-red-50 focus:ring-red-400",
         )}
         aria-label="토스트 닫기"
       >
@@ -319,13 +332,13 @@ const ToastItem: React.FC<{
 };
 
 /**
- * Toast Action 컴포넌트
+ * Toast 컴포넌트 (외부에서 사용할 수 있는 공개 컴포넌트)
  *
  * @description
- * - 토스트 내부에 액션 버튼을 추가할 때 사용
- * - 기본 스타일링과 호버/포커스 효과 포함
- * - destructive 변형에 대한 특별한 스타일링
+ * - ToastItem의 별칭으로 외부에서 사용할 수 있도록 export
+ * - Toaster 컴포넌트에서 사용
  */
+export const Toast = ToastItem;
 export const ToastAction: React.FC<{
   children: React.ReactNode;
   onClick?: () => void;
@@ -347,3 +360,40 @@ export const ToastAction: React.FC<{
 // 타입 내보내기
 export type ToastProps = ToastData;
 export type ToastActionElement = React.ReactElement<typeof ToastAction>;
+
+/**
+ * Toaster 컴포넌트
+ *
+ * @description
+ * - 토스트 컨테이너를 렌더링하는 컴포넌트
+ * - ToastProvider와 함께 사용하여 토스트 시스템 구성
+ * - 포털을 통해 화면 상단에 토스트들을 표시
+ */
+export const Toaster: React.FC = () => {
+  const { toasts, dismiss } = useToast();
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  // 마운트 상태 확인
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // 디버깅: Toaster 렌더링 확인
+  React.useEffect(() => {
+    if (isMounted) {
+      console.log("Toaster 렌더링됨, Toast 개수:", toasts.length);
+    }
+  }, [toasts, isMounted]);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return (
+    <div className="fixed bottom-4 right-4 z-[100] flex max-h-screen w-full max-w-[420px] flex-col-reverse gap-2 p-0">
+      {toasts.map((toast) => (
+        <Toast key={toast.id} toast={toast} onDismiss={dismiss} />
+      ))}
+    </div>
+  );
+};

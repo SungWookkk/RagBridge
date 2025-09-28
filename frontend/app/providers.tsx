@@ -3,6 +3,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import axios from "axios";
+import { Toaster } from "@/components/ui/toast";
+import { ToastProvider } from "@/components/ui/toast";
 
 /**
  * AxiosError 타입 가드 함수
@@ -94,7 +96,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <ToastProvider>
+        {children}
+        <Toaster />
+      </ToastProvider>
       {/* React Query Devtools 비활성화 (필요시 주석 해제) */}
       {/* {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools

@@ -214,6 +214,7 @@ export function DashboardHeader({
                       <User className="h-4 w-4 mr-2" />
                       프로필 설정
                     </Button>
+
                     <Button
                       variant="ghost"
                       className="w-full justify-start text-destructive hover:text-destructive"
@@ -232,3 +233,4 @@ export function DashboardHeader({
     </TooltipProvider>
   );
 }
+

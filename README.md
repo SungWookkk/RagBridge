@@ -199,58 +199,145 @@
 
 ## 폴더 구조 (현재 구현 상태)
 
-### Frontend - Next.js App Router 기반 컴포넌트 분리 구조
+### Frontend - Next.js App Router 기반 완전 구현된 대시보드 시스템
 
 ```bash
 frontend/
-├─ app/                          # Next.js App Router 구조
+├─ app/                          # Next.js App Router 구조 (✅ 완전 구현)
 │  ├─ layout.tsx                 # 루트 레이아웃 (React Query 설정)
 │  ├─ page.tsx                   # 메인 페이지 (대시보드로 리다이렉트)
-│  ├─ providers.tsx              # React Query 프로바이더
+│  ├─ providers.tsx              # React Query + Toast 프로바이더
 │  ├─ globals.css                # 글로벌 스타일
-│  └─ dashboard/                 # 대시보드 페이지들
+│  ├─ auth/                      # 인증 페이지들 (✅ 완전 구현)
+│  │  ├─ login/page.tsx          # 로그인 페이지
+│  │  ├─ register/page.tsx       # 회원가입 페이지
+│  │  └─ reset-password/page.tsx # 비밀번호 재설정 페이지
+│  └─ dashboard/                 # 대시보드 페이지들 (✅ 18개 서브메뉴 완전 구현)
 │     ├─ layout.tsx              # 대시보드 공통 레이아웃
 │     ├─ page.tsx                # 대시보드 메인 (개요)
-│     ├─ documents/page.tsx      # 문서 관리 페이지
-│     ├─ search/page.tsx         # 스마트 검색 페이지
-│     ├─ projects/page.tsx       # 프로젝트 관리 페이지
-│     └─ monitoring/page.tsx     # 시스템 모니터링 페이지
-├─ components/                   # 기능별 분리된 컴포넌트
+│     ├─ documents/              # 문서 작업 영역 (4개 페이지)
+│     │  ├─ page.tsx            # 문서 업로드
+│     │  ├─ processing/page.tsx  # 진행 중인 문서
+│     │  ├─ review/page.tsx      # 검토 대기
+│     │  └─ completed/page.tsx   # 완료된 문서
+│     ├─ search/                 # 지식 검색 영역 (3개 페이지)
+│     │  ├─ page.tsx            # AI 검색
+│     │  ├─ history/page.tsx     # 검색 기록
+│     │  └─ favorites/page.tsx   # 즐겨찾기
+│     ├─ validation/             # 워크플로우 자동화 영역 (3개 페이지)
+│     │  ├─ rules/page.tsx       # 검증 규칙
+│     │  ├─ mapping/page.tsx     # 자동 매핑
+│     │  └─ reprocess/page.tsx   # 재처리 큐
+│     ├─ projects/               # 조직 & 권한 영역 (3개 페이지)
+│     │  ├─ page.tsx             # 프로젝트 관리
+│     │  ├─ members/page.tsx     # 팀원 관리
+│     │  └─ api-keys/page.tsx    # API 키 관리
+│     ├─ billing/                # 사용량 & 과금 영역 (3개 페이지)
+│     │  ├─ usage/page.tsx       # 사용량 현황
+│     │  ├─ pricing/page.tsx     # 요금 정보
+│     │  └─ analytics/page.tsx   # 사용량 분석
+│     └─ monitoring/             # 시스템 현황 영역 (3개 페이지)
+│        ├─ page.tsx             # 시스템 상태
+│        ├─ performance/page.tsx # 성능 지표
+│        └─ alerts/page.tsx      # 알림 센터
+├─ components/                   # 기능별 분리된 컴포넌트 (✅ 완전 구현)
+│  ├─ auth/                      # 인증 관련 컴포넌트
+│  │  ├─ auth-form.tsx           # 통합 인증 폼
+│  │  ├─ auth-layout.tsx         # 인증 페이지 레이아웃
+│  │  └─ password-reset-form.tsx # 비밀번호 재설정 폼
 │  ├─ layout/                    # 공통 레이아웃 컴포넌트
 │  │  ├─ dashboard-layout.tsx    # 대시보드 레이아웃 (사이드바, 헤더)
-│  │  └─ sidebar.tsx             # 네비게이션 사이드바
-│  ├─ dashboard/                 # 대시보드 관련 컴포넌트
+│  │  └─ sidebar.tsx             # 네비게이션 사이드바 (6개 메인 카테고리)
+│  ├─ dashboard/                 # 대시보드 관련 컴포넌트 (12개)
+│  │  ├─ dashboard-header.tsx    # 대시보드 헤더 (사용자 메뉴 포함)
+│  │  ├─ animated-background.tsx # 애니메이션 배경
+│  │  ├─ pipeline-status.tsx     # 처리 파이프라인 상태
+│  │  ├─ metrics-cards.tsx       # 메트릭 카드들
 │  │  ├─ dashboard-overview.tsx  # 대시보드 개요
 │  │  ├─ recent-documents.tsx    # 최근 문서 현황
-│  │  └─ project-overview.tsx    # 프로젝트 개요
-│  ├─ documents/                 # 문서 관리 컴포넌트
-│  │  └─ document-management.tsx
-│  ├─ search/                    # 검색 관련 컴포넌트
-│  │  └─ smart-search.tsx
-│  ├─ projects/                  # 프로젝트 관리 컴포넌트
-│  │  └─ project-management.tsx
-│  ├─ monitoring/                # 모니터링 컴포넌트
-│  │  └─ system-monitoring.tsx
-│  └─ ui/                        # shadcn/ui 기본 컴포넌트들
-│     ├─ avatar.tsx              # 아바타 컴포넌트
-│     ├─ badge.tsx               # 배지 컴포넌트
-│     ├─ button.tsx              # 버튼 컴포넌트
-│     ├─ card.tsx                # 카드 컴포넌트
-│     ├─ input.tsx               # 입력 컴포넌트
-│     ├─ progress.tsx            # 진행률 컴포넌트
-│     ├─ scroll-area.tsx         # 스크롤 영역
-│     ├─ tabs.tsx                # 탭 컴포넌트
-│     ├─ toast.tsx               # 토스트 알림
-│     └─ tooltip.tsx             # 툴팁 컴포넌트
-├─ hooks/                        # API 연동 커스텀 훅
+│  │  ├─ project-overview.tsx    # 프로젝트 개요
+│  │  ├─ ai-feedback-board.tsx    # AI 피드백 보드
+│  │  ├─ usage-billing-snapshot.tsx # 사용량 과금 스냅샷
+│  │  ├─ user-focused-hero.tsx    # 사용자 중심 히어로
+│  │  ├─ user-task-queue.tsx     # 사용자 작업 큐
+│  │  └─ ragbridge-dashboard-refactored.tsx # 리팩토링된 메인 대시보드
+│  ├─ documents/                 # 문서 관리 컴포넌트 (5개)
+│  │  ├─ document-management.tsx # 문서 관리 메인
+│  │  ├─ document-upload.tsx     # 문서 업로드 (Drag & Drop)
+│  │  ├─ documents-in-progress.tsx # 진행 중인 문서
+│  │  ├─ pending-review.tsx      # 검토 대기 문서
+│  │  └─ completed-documents.tsx # 완료된 문서
+│  ├─ search/                    # 검색 관련 컴포넌트 (4개)
+│  │  ├─ smart-search.tsx        # 스마트 검색 메인
+│  │  ├─ ai-search.tsx           # AI 검색 (RAG 콘솔)
+│  │  ├─ search-history.tsx     # 검색 기록
+│  │  └─ favorites.tsx           # 즐겨찾기
+│  ├─ validation/                # 검증 관련 컴포넌트 (3개)
+│  │  ├─ validation-rules-builder.tsx # 검증 규칙 빌더 (3열 레이아웃)
+│  │  ├─ auto-mapping-builder.tsx # 자동 매핑 빌더
+│  │  └─ reprocessing-queue.tsx # 재처리 큐
+│  ├─ projects/                  # 프로젝트 관리 컴포넌트 (3개)
+│  │  ├─ project-management.tsx  # 프로젝트 관리
+│  │  ├─ team-member-management.tsx # 팀원 관리
+│  │  └─ api-key-management.tsx  # API 키 관리
+│  ├─ billing/                   # 과금 관련 컴포넌트 (3개)
+│  │  ├─ usage-status.tsx        # 사용량 현황
+│  │  ├─ billing-info.tsx        # 요금 정보
+│  │  └─ usage-analytics.tsx     # 사용량 분석
+│  ├─ monitoring/                # 모니터링 컴포넌트 (3개)
+│  │  ├─ system-monitoring.tsx   # 시스템 모니터링
+│  │  ├─ performance-metrics.tsx # 성능 지표
+│  │  └─ alert-center.tsx        # 알림 센터
+│  ├─ ui/                        # shadcn/ui 컴포넌트들 (15개)
+│  │  ├─ avatar.tsx              # 아바타 컴포넌트
+│  │  ├─ badge.tsx               # 배지 컴포넌트
+│  │  ├─ button.tsx              # 버튼 컴포넌트
+│  │  ├─ card.tsx                # 카드 컴포넌트
+│  │  ├─ checkbox.tsx            # 체크박스 컴포넌트
+│  │  ├─ dialog.tsx              # 다이얼로그 컴포넌트
+│  │  ├─ dropdown-menu.tsx       # 드롭다운 메뉴
+│  │  ├─ input.tsx               # 입력 컴포넌트
+│  │  ├─ label.tsx               # 라벨 컴포넌트
+│  │  ├─ memoized-icon.tsx       # 메모이제이션된 아이콘
+│  │  ├─ pagination.tsx          # 페이지네이션
+│  │  ├─ progress.tsx            # 진행률 컴포넌트
+│  │  ├─ scroll-area.tsx         # 스크롤 영역
+│  │  ├─ separator.tsx           # 구분선 컴포넌트
+│  │  ├─ tabs.tsx                # 탭 컴포넌트
+│  │  ├─ toast.tsx               # 토스트 알림 (중복 방지)
+│  │  ├─ tooltip.tsx             # 툴팁 컴포넌트
+│  │  └─ virtual-scroll.tsx     # 가상 스크롤
+│  ├─ error-boundary.tsx         # 에러 바운더리
+│  ├─ ragbridge-dashboard.tsx    # 레거시 대시보드 (1700줄)
+│  └─ toast-demo.tsx             # 토스트 데모
+├─ hooks/                        # API 연동 커스텀 훅 (23개)
+│  ├─ use-auth.ts                # 인증 관련 훅
 │  ├─ use-documents.ts           # 문서 관련 API 훅
-│  ├─ use-workspaces.ts          # 워크스페이스 관련 API 훅
+│  ├─ use-document-upload.ts     # 문서 업로드 훅
+│  ├─ use-documents-in-progress.ts # 진행 중인 문서 훅
+│  ├─ use-pending-review.ts      # 검토 대기 훅
+│  ├─ use-completed-documents.ts # 완료된 문서 훅
 │  ├─ use-search.ts              # 검색 기능 훅
+│  ├─ use-ai-search.ts           # AI 검색 훅
+│  ├─ use-search-history.ts      # 검색 기록 훅
+│  ├─ use-favorites.ts           # 즐겨찾기 훅
+│  ├─ use-validation-rules.ts    # 검증 규칙 훅
+│  ├─ use-auto-mapping.ts        # 자동 매핑 훅
+│  ├─ use-reprocessing-queue.ts  # 재처리 큐 훅
+│  ├─ use-workspaces.ts          # 워크스페이스 관련 훅
+│  ├─ use-team-members.ts        # 팀원 관리 훅
+│  ├─ use-api-keys.ts            # API 키 관리 훅
+│  ├─ use-usage-status.ts        # 사용량 현황 훅
+│  ├─ use-billing-info.ts        # 과금 정보 훅
+│  ├─ use-usage-analytics.ts     # 사용량 분석 훅
 │  ├─ use-system-metrics.ts      # 시스템 메트릭 훅
+│  ├─ use-performance-metrics.ts # 성능 지표 훅
+│  ├─ use-alert-center.ts        # 알림 센터 훅
 │  └─ use-toast.ts               # 토스트 훅
 ├─ lib/                          # 유틸리티 및 API 클라이언트
-│  ├─ api.ts                     # Axios API 클라이언트 설정
-│  └─ utils.ts                   # 공통 유틸리티 함수
+│  ├─ api.ts                     # Axios API 클라이언트 설정 (타입 안전)
+│  ├─ utils.ts                   # 공통 유틸리티 함수
+│  └─ constants.ts               # 운영 상수 정의
 ├─ public/                       # 정적 파일들
 ├─ components.json               # shadcn/ui 설정
 ├─ eslint.config.mjs             # ESLint 설정

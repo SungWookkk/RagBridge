@@ -15,14 +15,7 @@ import {
   X,
   ChevronDown,
   Wand2,
-  Upload,
-  Clock,
-  CheckCircle,
-  AlertTriangle,
   BarChart3,
-  Shield,
-  Key,
-  User,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";

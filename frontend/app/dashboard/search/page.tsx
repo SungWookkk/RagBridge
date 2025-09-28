@@ -1,13 +1,14 @@
-import { SmartSearch } from "@/components/search/smart-search";
+import { AISearch } from "@/components/search/ai-search";
 
 /**
- * 스마트 검색 페이지
+ * AI 검색 페이지
  *
  * @description
- * - AI 기반 자연어 질의응답 시스템
- * - 벡터 검색 및 문서 인덱스 관리
- * - 검색 히스토리 및 결과 분석
+ * - 자연어로 질문하고 답변 받기
+ * - RAG 기반 지능형 검색
+ * - 출처 문서 및 하이라이트 표시
+ * - 실시간 스트림 응답
  */
-export default function SearchPage() {
-  return <SmartSearch />;
+export default function AISearchPage() {
+  return <AISearch />;
 }
